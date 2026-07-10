@@ -1,0 +1,42 @@
+"""Constants for Reviews module."""
+
+# Rating range
+MIN_RATING = 1
+MAX_RATING = 5
+
+# Review status
+REVIEW_STATUS_PENDING = 'pending'
+REVIEW_STATUS_APPROVED = 'approved'
+REVIEW_STATUS_REJECTED = 'rejected'
+REVIEW_STATUS_FLAGGED = 'flagged'
+
+REVIEW_STATUS_CHOICES = [
+    (REVIEW_STATUS_PENDING, 'Pending'),
+    (REVIEW_STATUS_APPROVED, 'Approved'),
+    (REVIEW_STATUS_REJECTED, 'Rejected'),
+    (REVIEW_STATUS_FLAGGED, 'Flagged'),
+]
+
+# Complaint status
+COMPLAINT_STATUS_OPEN = 'open'
+COMPLAINT_STATUS_IN_PROGRESS = 'in_progress'
+COMPLAINT_STATUS_RESOLVED = 'resolved'
+COMPLAINT_STATUS_CLOSED = 'closed'
+
+COMPLAINT_STATUS_CHOICES = [
+    (COMPLAINT_STATUS_OPEN, 'Open'),
+    (COMPLAINT_STATUS_IN_PROGRESS, 'In Progress'),
+    (COMPLAINT_STATUS_RESOLVED, 'Resolved'),
+    (COMPLAINT_STATUS_CLOSED, 'Closed'),
+]
+
+# Complaint priority
+COMPLAINT_PRIORITY_LOW = 'low'
+COMPLAINT_PRIORITY_MEDIUM = 'medium'
+COMPLAINT_PRIORITY_HIGH = 'high'
+
+COMPLAINT_PRIORITY_CHOICES = [
+    (COMPLAINT_PRIORITY_LOW, 'Low'),
+    (COMPLAINT_PRIORITY_MEDIUM, 'Medium'),
+    (COMPLAINT_PRIORITY_HIGH, 'High'),
+]

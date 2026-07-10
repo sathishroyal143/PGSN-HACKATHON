@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Login Detected - CareBridge AI</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0;">CareBridge AI</h1>
+        <p style="color: white; margin: 10px 0 0 0;">Security Alert</p>
+    </div>
+
+    <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+        <h2 style="color: #e53e3e;">New Login Detected</h2>
+
+        <p>Hello {{ full_name }},</p>
+
+        <p>A new login to your CareBridge AI account was detected:</p>
+
+        <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #667eea;">
+            <p><strong>Time:</strong> {{ login_time }}</p>
+            <p><strong>Device:</strong> {{ device_name }}</p>
+            <p><strong>IP Address:</strong> {{ ip_address }}</p>
+        </div>
+
+        <p>If this was you, no action is needed. If you did not log in, please change your password immediately and contact support.</p>
+
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+        <p style="font-size: 12px; color: #666;">
+            Need help? Contact us at <a href="mailto:{{ support_email }}" style="color: #667eea;">{{ support_email }}</a>
+        </p>
+        <p style="font-size: 12px; color: #666;">&copy; 2024 CareBridge AI. All rights reserved.</p>
+    </div>
+</body>
+</html>

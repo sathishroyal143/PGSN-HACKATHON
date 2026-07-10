@@ -1,0 +1,59 @@
+"""Constants for Support module."""
+
+# Ticket status
+TICKET_STATUS_OPEN = 'open'
+TICKET_STATUS_IN_PROGRESS = 'in_progress'
+TICKET_STATUS_RESOLVED = 'resolved'
+TICKET_STATUS_CLOSED = 'closed'
+
+TICKET_STATUS_CHOICES = [
+    (TICKET_STATUS_OPEN, 'Open'),
+    (TICKET_STATUS_IN_PROGRESS, 'In Progress'),
+    (TICKET_STATUS_RESOLVED, 'Resolved'),
+    (TICKET_STATUS_CLOSED, 'Closed'),
+]
+
+# Ticket priority
+TICKET_PRIORITY_LOW = 'low'
+TICKET_PRIORITY_MEDIUM = 'medium'
+TICKET_PRIORITY_HIGH = 'high'
+TICKET_PRIORITY_URGENT = 'urgent'
+
+TICKET_PRIORITY_CHOICES = [
+    (TICKET_PRIORITY_LOW, 'Low'),
+    (TICKET_PRIORITY_MEDIUM, 'Medium'),
+    (TICKET_PRIORITY_HIGH, 'High'),
+    (TICKET_PRIORITY_URGENT, 'Urgent'),
+]
+
+# Ticket category
+TICKET_CATEGORY_BOOKING = 'booking'
+TICKET_CATEGORY_PAYMENT = 'payment'
+TICKET_CATEGORY_COMPANION = 'companion'
+TICKET_CATEGORY_ACCOUNT = 'account'
+TICKET_CATEGORY_TECHNICAL = 'technical'
+TICKET_CATEGORY_OTHER = 'other'
+
+TICKET_CATEGORY_CHOICES = [
+    (TICKET_CATEGORY_BOOKING, 'Booking'),
+    (TICKET_CATEGORY_PAYMENT, 'Payment'),
+    (TICKET_CATEGORY_COMPANION, 'Companion'),
+    (TICKET_CATEGORY_ACCOUNT, 'Account'),
+    (TICKET_CATEGORY_TECHNICAL, 'Technical'),
+    (TICKET_CATEGORY_OTHER, 'Other'),
+]
+
+# FAQ category
+FAQ_CATEGORY_GENERAL = 'general'
+FAQ_CATEGORY_BOOKING = 'booking'
+FAQ_CATEGORY_PAYMENT = 'payment'
+FAQ_CATEGORY_COMPANION = 'companion'
+FAQ_CATEGORY_ACCOUNT = 'account'
+
+FAQ_CATEGORY_CHOICES = [
+    (FAQ_CATEGORY_GENERAL, 'General'),
+    (FAQ_CATEGORY_BOOKING, 'Booking'),
+    (FAQ_CATEGORY_PAYMENT, 'Payment'),
+    (FAQ_CATEGORY_COMPANION, 'Companion'),
+    (FAQ_CATEGORY_ACCOUNT, 'Account'),
+]

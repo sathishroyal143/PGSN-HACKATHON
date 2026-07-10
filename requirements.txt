@@ -1,0 +1,78 @@
+# Core Django
+Django==5.0.1
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+psycopg2-binary==2.9.9
+
+# Authentication & Security
+djangorestframework-simplejwt==5.3.1
+django-rest-passwordreset==1.4.0
+PyJWT==2.8.0
+
+# Celery & Redis
+celery==5.3.6
+redis==5.0.1
+django-celery-beat==2.6.0
+django-celery-results==2.5.1
+
+# Channels (WebSocket)
+channels==4.0.0
+channels-redis==4.1.0
+daphne==4.0.0
+
+# File Upload & Storage
+Pillow==10.2.0
+django-storages==1.14.2
+boto3==1.34.34
+
+# Validation & Utilities
+python-decouple==3.8
+python-dotenv==1.0.1
+django-phonenumber-field==7.3.0
+phonenumbers==8.13.29
+
+# API Documentation
+drf-spectacular==0.27.1
+
+# Payment Gateway
+razorpay==1.4.2
+
+# Communication
+twilio==8.13.0
+sendgrid==6.11.0
+firebase-admin==6.4.0
+
+# AI & ML
+openai==1.10.0
+scikit-learn==1.4.0
+pandas==2.2.0
+numpy==1.26.3
+
+# Geospatial
+geopy==2.4.1
+
+# Static file serving (production)
+whitenoise==6.6.0
+
+# Monitoring & Logging
+sentry-sdk==1.40.0
+
+# Date & Time
+pytz==2024.1
+
+# Testing (also in dev, but needed for CI/CD)
+pytest==7.4.4
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+
+# Code Quality
+black==24.1.1
+flake8==7.0.0
+isort==5.13.2
+
+# Security
+django-ratelimit==4.1.0
+django-defender==0.9.7
