@@ -10,7 +10,7 @@ from rest_framework import serializers as drf_serializers, status
 
 from .selectors import InvoiceSelectors, PaymentSelectors, WalletSelectors
 from .services import InvoiceService, PaymentService, RefundService
-from .repositories import RefundRepository, PaymentRepository
+from .repositories import RefundRepository, PaymentRepository, WalletRepository
 from .serializers import (
     InitiatePaymentSerializer, InvoiceSerializer, PaymentSerializer,
     RefundSerializer, RequestRefundSerializer,
@@ -221,3 +221,59 @@ class WalletTransactionListView(APIView):
     def get(self, request):
         qs = WalletSelectors.transactions(request.user.id)
         return Response({'data': WalletTransactionSerializer(qs, many=True).data})
+
+
+class WalletRechargeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        amount = request.data.get('amount', 0)
+        try:
+            from decimal import Decimal
+            amount = Decimal(amount)
+            if amount <= 0:
+                return Response({"error": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({"error": "Invalid amount format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        wallet = WalletRepository.credit(
+            request.user.id, 
+            amount, 
+            description="Hackathon Wallet Recharge"
+        )
+        return Response({
+            'message': f"Successfully recharged ₹{amount}",
+            'data': WalletSerializer(wallet).data
+        })
+
+
+class WalletWithdrawView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        amount = request.data.get('amount', 0)
+        try:
+            from decimal import Decimal
+            amount = Decimal(amount)
+            if amount <= 0:
+                return Response({"error": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response({"error": "Invalid amount format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        wallet = WalletSelectors.get(request.user.id)
+        if wallet.balance < amount:
+            return Response({"error": "Insufficient wallet balance"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            wallet = WalletRepository.debit(
+                request.user.id, 
+                amount, 
+                description="Withdrawal to bank account"
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            'message': f"Successfully withdrew ₹{amount}",
+            'data': WalletSerializer(wallet).data
+        })

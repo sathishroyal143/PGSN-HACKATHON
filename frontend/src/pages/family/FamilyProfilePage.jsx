@@ -6,21 +6,30 @@ import { fetchProfile } from '../../redux/slices/familySlice'
 import { updateMe, updateUserProfilePicture } from '../../redux/slices/userSlice'
 import { fetchCurrentUser } from '../../redux/slices/authSlice'
 import toast from 'react-hot-toast'
+import { fetchWallet, fetchWalletTransactions } from '../../redux/slices/paymentsSlice'
+import paymentsApi from '../../api/paymentsApi'
 
 export default function FamilyProfilePage() {
   const dispatch = useDispatch()
   const { profile, loading } = useSelector((s) => s.family)
   const user = useSelector((s) => s.auth.user || s.user.profile)
+  const { wallet, walletTransactions, loading: paymentsLoading } = useSelector((s) => s.payments)
   const fileInputRef = useRef(null)
 
   const [isEditingUser, setIsEditingUser] = useState(false)
   const [selectedImageFile, setSelectedImageFile] = useState(null)
   const [previewImageUrl, setPreviewImageUrl] = useState(null)
+  const [rechargeAmount, setRechargeAmount] = useState('1000')
+  const [isRecharging, setIsRecharging] = useState(false)
   
   const { register, handleSubmit, reset } = useForm()
 
   useEffect(() => {
-    if (user?.role === 'FAMILY') dispatch(fetchProfile())
+    if (user?.role === 'FAMILY') {
+      dispatch(fetchProfile())
+      dispatch(fetchWallet())
+      dispatch(fetchWalletTransactions())
+    }
   }, [dispatch, user])
 
   useEffect(() => {
@@ -32,6 +41,25 @@ export default function FamilyProfilePage() {
       })
     }
   }, [user, reset])
+
+  const handleRecharge = async () => {
+    if (!rechargeAmount || isNaN(rechargeAmount) || Number(rechargeAmount) <= 0) {
+      toast.error('Enter a valid amount')
+      return
+    }
+    setIsRecharging(true)
+    try {
+      await paymentsApi.rechargeWallet({ amount: Number(rechargeAmount) })
+      toast.success(`Successfully recharged ₹${rechargeAmount}`)
+      dispatch(fetchWallet())
+      dispatch(fetchWalletTransactions())
+      setRechargeAmount('')
+    } catch (err) {
+      toast.error('Recharge failed')
+    } finally {
+      setIsRecharging(false)
+    }
+  }
 
   const handleCancelEdit = () => {
     setIsEditingUser(false)
@@ -91,6 +119,7 @@ export default function FamilyProfilePage() {
   }
 
   if (user && user.role !== 'FAMILY') {
+
     return (
       <div className="max-w-2xl mx-auto p-6">
         <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 text-center">
@@ -253,6 +282,77 @@ export default function FamilyProfilePage() {
           </div>
         </div>
       )}
+
+      {/* Wallet & Top Up */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">Wallet</h2>
+        </div>
+        <div className="p-6 space-y-6">
+          {paymentsLoading && !wallet ? (
+            <p className="text-gray-500">Loading wallet...</p>
+          ) : (
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Balance Card */}
+              <div className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl p-5 text-white flex flex-col justify-between shadow-md">
+                <div>
+                  <p className="text-sm opacity-80 font-medium">Available Balance</p>
+                  <p className="text-3xl font-bold mt-1">₹{parseFloat(wallet?.balance || 0).toFixed(2)}</p>
+                </div>
+                <p className="text-xs opacity-70 mt-4">Required to request a Care Journey</p>
+              </div>
+              
+              {/* Recharge form */}
+              <div className="flex-1 bg-gray-50 rounded-xl p-5 border border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-800 mb-3">Recharge Wallet</h3>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+                    <input
+                      type="number"
+                      value={rechargeAmount}
+                      onChange={(e) => setRechargeAmount(e.target.value)}
+                      className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                      placeholder="Amount"
+                    />
+                  </div>
+                  <button
+                    onClick={handleRecharge}
+                    disabled={isRecharging}
+                    className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+                  >
+                    {isRecharging ? 'Processing...' : 'Top Up'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Transactions List */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">Recent Transactions</h3>
+            {walletTransactions && walletTransactions.length > 0 ? (
+              <div className="space-y-2">
+                {walletTransactions.slice(0, 5).map((txn) => (
+                  <div key={txn.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]" title={txn.description}>{txn.description}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {new Date(txn.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <div className={`text-sm font-medium ${txn.txn_type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                      {txn.txn_type === 'credit' ? '+' : '-'}₹{parseFloat(txn.amount).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 italic">No transactions yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

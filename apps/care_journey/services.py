@@ -118,6 +118,27 @@ class CareJourneyService:
                 notes="Care Journey completed.",
             )
             
+            # --- Escrow Wallet Transfer ---
+            from apps.payments.services import WalletService
+            from apps.payments.exceptions import InsufficientWalletBalanceException
+            try:
+                WalletService.transfer_funds(
+                    sender_id=booking.family_user_id,
+                    receiver_id=booking.companion_id,
+                    amount=booking.quoted_price,
+                    description=f"Journey {journey.id}",
+                    reference_id=str(booking.id)
+                )
+                logger.info(f"Escrow transfer successful for Journey {journey.id}")
+            except InsufficientWalletBalanceException:
+                logger.error(f"Escrow transfer failed for Journey {journey.id}: Insufficient balance.")
+                # We could potentially mark the journey as pending payment here if needed,
+                # but per requirements, they must have balance before booking anyway.
+                raise BusinessLogicException("Insufficient wallet balance for payment transfer.")
+            except Exception as e:
+                logger.error(f"Escrow transfer failed with error: {e}")
+                raise BusinessLogicException("Failed to process payment transfer.")
+            
             # Close the associated conversation
             if hasattr(booking, 'conversation') and booking.conversation:
                 booking.conversation.status = 'closed'

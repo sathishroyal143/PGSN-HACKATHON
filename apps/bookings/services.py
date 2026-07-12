@@ -70,6 +70,14 @@ class BookingService:
         if data['scheduled_end'] <= data['scheduled_start']:
             raise ValidationException("Scheduled end must be after start.")
 
+        # ── Wallet Balance Validation ───────────────────────────────────────────
+        from apps.payments.repositories import WalletRepository
+        wallet = WalletRepository.get_or_create(family_user.id)
+        quoted_price = breakdown.get('total', 0)
+        if wallet.balance < quoted_price:
+            raise ValidationException(f"Insufficient wallet balance. Minimum required is ₹{quoted_price}.")
+
+
         booking = Booking.objects.create(
             family_user=family_user,
             patient_id=data['patient_id'],

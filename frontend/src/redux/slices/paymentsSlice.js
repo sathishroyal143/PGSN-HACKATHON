@@ -26,6 +26,11 @@ export const fetchWalletTransactions = createAsyncThunk('payments/fetchWalletTxn
   catch (err) { return rejectWithValue(err.response?.data?.error?.message || 'Failed.') }
 })
 
+export const withdrawWallet = createAsyncThunk('payments/withdrawWallet', async (data, { rejectWithValue }) => {
+  try { return (await paymentsApi.withdrawFromWallet(data)).data.data }
+  catch (err) { return rejectWithValue(err.response?.data?.error || err.response?.data?.error?.message || 'Withdrawal failed.') }
+})
+
 const paymentsSlice = createSlice({
   name: 'payments',
   initialState: {
@@ -46,6 +51,9 @@ const paymentsSlice = createSlice({
       .addCase(fetchInvoices.fulfilled, (state, action) => { state.invoices = action.payload || [] })
       .addCase(fetchWallet.fulfilled, (state, action) => { state.wallet = action.payload })
       .addCase(fetchWalletTransactions.fulfilled, (state, action) => { state.walletTransactions = action.payload || [] })
+      .addCase(withdrawWallet.fulfilled, (state, action) => {
+        state.wallet = action.payload
+      })
   },
 })
 

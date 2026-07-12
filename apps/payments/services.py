@@ -102,3 +102,40 @@ class InvoiceService:
             line_items=line_items or [],
             notes=notes,
         )
+
+
+class WalletService:
+
+    @staticmethod
+    def transfer_funds(sender_id, receiver_id, amount, description='', reference_id=''):
+        from django.db import transaction as db_transaction
+        from .models import WalletTransaction, Wallet
+        import logging
+        logger = logging.getLogger('carebridge')
+        
+        with db_transaction.atomic():
+            # Lock sender's wallet to serialize concurrent requests
+            sender_wallet = Wallet.objects.select_for_update().get(user_id=sender_id)
+            
+            # Idempotency check: prevent duplicate transfers for the same journey
+            if reference_id and WalletTransaction.objects.filter(
+                wallet=sender_wallet, 
+                txn_type='DEBIT', 
+                reference_id=reference_id
+            ).exists():
+                logger.info(f"Transfer for reference {reference_id} already processed. Skipping.")
+                return
+
+            WalletRepository.debit(
+                user_id=sender_id,
+                amount=amount,
+                description=f"Paid for: {description}",
+                reference_id=reference_id
+            )
+            WalletRepository.credit(
+                user_id=receiver_id,
+                amount=amount,
+                description=f"Earned from: {description}",
+                reference_id=reference_id
+            )
+

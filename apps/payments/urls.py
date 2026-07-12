@@ -4,7 +4,8 @@ from .views import (
     InvoiceDetailView, InvoiceListView, PaymentListView,
     PaymentOrderView, PaymentVerifyView, PaymentWebhookView,
     RefundListView, RefundProcessView,
-    WalletTransactionListView, WalletView,
+    WalletTransactionListView, WalletView, WalletRechargeView,
+    WalletWithdrawView
 )
 
 app_name = 'payments'
@@ -19,5 +20,7 @@ urlpatterns = [
     path('invoices/', InvoiceListView.as_view(), name='invoice-list'),
     path('invoices/booking/<uuid:booking_id>/', InvoiceDetailView.as_view(), name='invoice-detail'),
     path('wallet/', WalletView.as_view(), name='wallet'),
+    path('wallet/recharge/', WalletRechargeView.as_view(), name='wallet-recharge'),
     path('wallet/transactions/', WalletTransactionListView.as_view(), name='wallet-transactions'),
+    path('wallet/withdraw/', WalletWithdrawView.as_view(), name='wallet-withdraw'),
 ]

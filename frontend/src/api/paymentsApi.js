@@ -12,6 +12,8 @@ const paymentsApi = {
   getInvoiceByBooking: (bookingId) => axiosInstance.get(`${BASE}/invoices/booking/${bookingId}/`),
   getWallet: () => axiosInstance.get(`${BASE}/wallet/`),
   getWalletTransactions: () => axiosInstance.get(`${BASE}/wallet/transactions/`),
+  rechargeWallet: (data) => axiosInstance.post(`${BASE}/wallet/recharge/`, data),
+  withdrawFromWallet: (data) => axiosInstance.post(`${BASE}/wallet/withdraw/`, data),
 }
 
 export default paymentsApi
