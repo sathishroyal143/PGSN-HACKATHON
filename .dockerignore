@@ -1,0 +1,53 @@
+# Version control
+.git
+.gitignore
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Test & coverage artifacts
+.pytest_cache
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Logs (will use Docker volumes)
+*.log
+logs/
+
+# Django collected files (rebuilt in image)
+staticfiles/
+media/
+
+# Local DB
+db.sqlite3
+
+# Editor configs
+.vscode/
+.idea/
+
+# Docker files (no need to copy into image)
+docker-compose*.yml
+Dockerfile
+README_DOCKER.md
+
+# Windows artifacts
+Thumbs.db
+desktop.ini
+
+# NOTE: .env is intentionally NOT ignored here so that `docker compose`
+# can read it at runtime via the `env_file:` directive.
+# It is excluded from git via .gitignore instead.

@@ -1,6 +1,6 @@
 import api from './axiosInstance'
 
-const BASE = '/auth/auth'
+const BASE = '/auth'
 
 export const register = (data) => api.post(`${BASE}/register/`, data)
 export const login = (data) => api.post(`${BASE}/login/`, data)

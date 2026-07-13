@@ -1,0 +1,23 @@
+services:
+  backend:
+    environment:
+      - DEBUG=False
+    restart: always
+
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+
+  celery_worker:
+    restart: always
+
+  celery_beat:
+    restart: always
+
+  nginx:
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"

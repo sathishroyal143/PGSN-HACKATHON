@@ -8,7 +8,7 @@ from apps.authentication.views import AuthenticationViewSet
 app_name = 'authentication'
 
 router = DefaultRouter()
-router.register(r'auth', AuthenticationViewSet, basename='auth')
+router.register(r'', AuthenticationViewSet, basename='auth')
 
 urlpatterns = [
     path('', include(router.urls)),

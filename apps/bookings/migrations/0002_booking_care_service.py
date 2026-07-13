@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("bookings", "0001_initial"),
-        ("services", "0001_initial"),
+        ("services", "0002_servicecategory_careservice"),
     ]
 
     operations = [

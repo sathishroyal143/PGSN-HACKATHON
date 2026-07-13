@@ -76,3 +76,7 @@ isort==5.13.2
 # Security
 django-ratelimit==4.1.0
 django-defender==0.9.7
+
+# Production Server (ASGI)
+gunicorn==21.2.0
+uvicorn==0.27.0

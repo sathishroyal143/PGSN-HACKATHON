@@ -1,0 +1,13 @@
+# docker-compose.override.yml
+#
+# This file is intentionally left empty (no services defined).
+#
+# Previously this file mounted the host source code into the container,
+# which caused issues by overriding the built image's installed packages
+# with the local Windows paths (including venv/).
+#
+# For local development with hot-reload, use:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# See docker-compose.dev.yml for the development override configuration.
+services: {}

@@ -1,0 +1,42 @@
+# Development override — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#
+# Adds: source-code hot reload, exposed debug ports
+services:
+  backend:
+    volumes:
+      # Mount source code for hot reload (override image code)
+      - .:/app
+      # Keep the image's installed packages (don't override with local venv)
+      - /app/venv
+      - /app/.venv
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - logs_volume:/app/logs
+    environment:
+      DEBUG: "True"
+    ports:
+      - "8000:8000"
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    volumes:
+      - .:/app
+      - /app/venv
+      - /app/.venv
+      - media_volume:/app/media
+      - logs_volume:/app/logs
+
+  celery_beat:
+    volumes:
+      - .:/app
+      - /app/venv
+      - /app/.venv
+      - logs_volume:/app/logs

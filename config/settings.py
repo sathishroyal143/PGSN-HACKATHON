@@ -265,6 +265,11 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://localhost:3000,http://localhost,http://127.0.0.1'
+).split(',')
+
 
 # Celery Configuration
 CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
@@ -277,6 +282,9 @@ CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Defender Configuration
+DEFENDER_REDIS_URL = config('DEFENDER_REDIS_URL', default=CELERY_BROKER_URL)
 
 # Channels Configuration (WebSocket)
 REDIS_URL = config('REDIS_URL', default='')
