@@ -21,22 +21,32 @@ except Exception:
 done
 echo "      Postgres is up!"
 
-# ── Apply database migrations ─────────────────────────────────────────────────
-echo "[2/4] Applying database migrations..."
-python manage.py migrate --noinput
+# ── Execute Commands ────────────────────────────────────────────────────────
+if [ $# -eq 0 ] || [[ "$1" == *"gunicorn"* ]]; then
+    # ── Apply database migrations ─────────────────────────────────────────────────
+    echo "[2/4] Applying database migrations..."
+    python manage.py migrate --noinput
 
-# ── Collect static files ──────────────────────────────────────────────────────
-echo "[3/4] Collecting static files..."
-python manage.py collectstatic --noinput --clear
+    # ── Collect static files ──────────────────────────────────────────────────────
+    echo "[3/4] Collecting static files..."
+    python manage.py collectstatic --noinput --clear
 
-# ── Start Gunicorn + Uvicorn (ASGI) ──────────────────────────────────────────
-echo "[4/4] Starting Gunicorn with Uvicorn workers..."
-exec gunicorn config.asgi:application \
-    -k uvicorn.workers.UvicornWorker \
-    --bind 0.0.0.0:8000 \
-    --workers ${GUNICORN_WORKERS:-4} \
-    --timeout 120 \
-    --keep-alive 5 \
-    --log-level info \
-    --access-logfile - \
-    --error-logfile -
+    # ── Start Gunicorn + Uvicorn (ASGI) ──────────────────────────────────────────
+    echo "[4/4] Starting Gunicorn with Uvicorn workers..."
+    if [ $# -eq 0 ]; then
+        exec gunicorn config.asgi:application \
+            -k uvicorn.workers.UvicornWorker \
+            --bind 0.0.0.0:8000 \
+            --workers ${GUNICORN_WORKERS:-4} \
+            --timeout 120 \
+            --keep-alive 5 \
+            --log-level info \
+            --access-logfile - \
+            --error-logfile -
+    else
+        exec "$@"
+    fi
+else
+    echo "Executing command: $@"
+    exec "$@"
+fi

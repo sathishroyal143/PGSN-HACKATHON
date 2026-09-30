@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { requestPasswordReset, confirmPasswordReset, clearError, clearResetState } from '../../redux/slices/authSlice'
 import toast from 'react-hot-toast'
+import loginBg from '../../assets/login-bg.png'
 
 const emailSchema = z.object({
-  email: z.string().email('Invalid email'),
+  email: z.string().email('Invalid email address'),
 })
 
 const resetSchema = z.object({
@@ -51,78 +52,132 @@ export default function ForgotPasswordPage() {
   const onRequestSubmit = (data) => dispatch(requestPasswordReset(data))
   const onResetSubmit = (data) => dispatch(confirmPasswordReset(data))
 
-  if (step === 'reset') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Set new password</h1>
-          <p className="text-gray-500 text-sm mb-6">Enter the token from your email and your new password</p>
-
-          <form onSubmit={resetForm.handleSubmit(onResetSubmit)} className="space-y-4">
-            {[
-              { name: 'token', label: 'Reset Token', type: 'text', placeholder: 'Paste token from email' },
-              { name: 'new_password', label: 'New Password', type: 'password', placeholder: '••••••••' },
-              { name: 'password_confirmation', label: 'Confirm Password', type: 'password', placeholder: '••••••••' },
-            ].map(({ name, label, type, placeholder }) => (
-              <div key={name}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                <input
-                  {...resetForm.register(name)}
-                  type={type}
-                  placeholder={placeholder}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                {resetForm.formState.errors[name] && (
-                  <p className="text-red-500 text-xs mt-1">{resetForm.formState.errors[name].message}</p>
-                )}
-              </div>
-            ))}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-lg text-sm transition disabled:opacity-50"
-            >
-              {loading ? 'Resetting…' : 'Reset Password'}
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
+  const Field = ({ name, label, type = 'text', form }) => (
+    <div className="relative group">
+      <input
+        {...form.register(name)}
+        type={type}
+        id={name}
+        placeholder=" "
+        className={`peer w-full bg-transparent border rounded-xl px-4 py-3.5 text-sm text-white transition-all duration-300 outline-none
+          ${form.formState.errors[name] ? 'border-red-500 focus:border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'border-gray-700 hover:border-gray-500 focus:border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.0)] focus:shadow-[0_0_15px_rgba(6,182,212,0.15)]'}
+        `}
+      />
+      <label htmlFor={name} className="absolute left-4 top-3.5 text-sm text-gray-500 transition-all duration-200 z-10 pointer-events-none peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-cyan-400 peer-focus:bg-[#0d131a] peer-focus:px-1 peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:bg-[#0d131a] peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-gray-300">
+        {label}
+      </label>
+      {form.formState.errors[name] && <p className="text-red-400 text-xs mt-1 absolute -bottom-5 left-1">{form.formState.errors[name].message}</p>}
+    </div>
+  )
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Forgot password?</h1>
-        <p className="text-gray-500 text-sm mb-6">Enter your email and we'll send a reset link</p>
-
-        <form onSubmit={emailForm.handleSubmit(onRequestSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              {...emailForm.register('email')}
-              type="email"
-              placeholder="you@example.com"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-            {emailForm.formState.errors.email && (
-              <p className="text-red-500 text-xs mt-1">{emailForm.formState.errors.email.message}</p>
-            )}
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0f16] overflow-hidden relative selection:bg-cyan-500/30 p-4">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse duration-10000" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse duration-7000" />
+      
+      <div className="w-full max-w-6xl h-[85vh] min-h-[600px] flex rounded-3xl overflow-hidden shadow-2xl shadow-cyan-900/20 border border-white/5 relative z-10 backdrop-blur-xl">
+        
+        {/* Left Side: Image & Glassmorphism Overlay */}
+        <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
+          <img src={loginBg} alt="CareBridge AI Technology" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f16] via-[#0a0f16]/40 to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-cyan-900/10 mix-blend-overlay" />
+          
+          <div className="relative z-10 flex flex-col justify-end p-12 w-full h-full text-white">
+            <div className="backdrop-blur-md bg-white/5 border border-white/10 p-8 rounded-2xl transform transition-transform duration-700 hover:-translate-y-2 hover:bg-white/10 shadow-xl shadow-black/50 group">
+              <h2 className="text-4xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
+                Account Recovery
+              </h2>
+              <p className="text-gray-300 text-lg leading-relaxed font-light">
+                Don't worry, getting back into your CareBridge AI dashboard is quick and secure.
+              </p>
+            </div>
           </div>
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 rounded-lg text-sm transition disabled:opacity-50"
-          >
-            {loading ? 'Sending…' : 'Send Reset Email'}
-          </button>
-        </form>
+        {/* Right Side: Recovery Form */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 sm:p-12 lg:p-16 bg-[#0d131a] relative">
+          <div className="absolute top-8 right-8">
+            <span className="text-xs font-semibold tracking-widest text-cyan-500/80 uppercase">Secure Portal</span>
+          </div>
+          
+          <div className="w-full max-w-sm mx-auto space-y-8">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                {step === 'request' ? 'Forgot Password' : 'Set New Password'}
+              </h1>
+              <p className="text-gray-400 text-sm">
+                {step === 'request' 
+                  ? "Enter your email and we'll send you a secure reset link."
+                  : "Enter the token from your email along with your new password."}
+              </p>
+            </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          <Link to="/login" className="text-primary-600 hover:underline">Back to login</Link>
-        </p>
+            {step === 'request' ? (
+              <form onSubmit={emailForm.handleSubmit(onRequestSubmit)} className="space-y-7">
+                <div className="space-y-6">
+                  <Field name="email" label="Email Address" type="email" form={emailForm} />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="relative w-full h-12 rounded-xl text-white font-semibold text-sm overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(8,145,178,0.3)] hover:shadow-[0_0_25px_rgba(8,145,178,0.5)] mt-4"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition-opacity duration-300" />
+                  <div className="relative flex items-center justify-center gap-2 h-full">
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : 'Send Reset Link'}
+                  </div>
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={resetForm.handleSubmit(onResetSubmit)} className="space-y-7">
+                <div className="space-y-6">
+                  <Field name="token" label="Reset Token (from email)" type="text" form={resetForm} />
+                  <Field name="new_password" label="New Password" type="password" form={resetForm} />
+                  <Field name="password_confirmation" label="Confirm Password" type="password" form={resetForm} />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="relative w-full h-12 rounded-xl text-white font-semibold text-sm overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(8,145,178,0.3)] hover:shadow-[0_0_25px_rgba(8,145,178,0.5)] mt-4"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition-opacity duration-300" />
+                  <div className="relative flex items-center justify-center gap-2 h-full">
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Resetting...
+                      </>
+                    ) : 'Reset Password'}
+                  </div>
+                </button>
+              </form>
+            )}
+
+            <div className="pt-6 text-center border-t border-gray-800/60">
+              <Link to="/login" className="text-sm text-cyan-400 hover:text-cyan-300 font-semibold transition-colors hover:underline underline-offset-4">
+                &larr; Back to Login
+              </Link>
+            </div>
+            
+          </div>
+        </div>
       </div>
     </div>
   )
